@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaScript, JQuery, Bootstrap</title>
+<meta charset='UTF-8' />
+<!-- Latest compiled and minified CSS
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+-->
+<!-- Optional theme
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+-->
+<link rel="stylesheet" href="./bootstrap.min.css">
+<link rel="stylesheet" href="./bootstrap-theme.min.css">
+
+<!--
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+-->
+<script src="./jquery-1.9.1.js">
+</script>
+
+<!-- Latest compiled and minified JavaScript 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js">
+</script>
+-->
+<script src="./bootstrap.min.js">
+</script>
+
+<script>
+
+function expandTextarea($element) {    
+    $element.addEventListener('keyup', function() {
+        this.style.overflow = 'hidden';
+        this.style.height = 0;
+        this.style.height = this.scrollHeight + 'px';
+    }, false);
+};
+
+function assert(value, desc) {
+    var li = document.createElement("li");
+    li.style.color = value ? "green" : "red";
+    li.appendChild(document.createTextNode(desc));
+    var list = document.getElementById("results");
+    if (!list) {
+        list = document.createElement("div");
+        document.body.appendChild(list);
+    }
+    list.appendChild(li);
+}
+
+$( document ).ready(function() {
+    console.log( "ready!" );
+    expandTextarea($('#code').get(0));
+    $("#play").click(function(){
+        var result = eval($('#code').val());
+        //$('#history').append("<pre>" + $('#code').val() + "</pre>").append("<p>" + result + "</p>");
+        $('#history').prepend("<pre>" + $('#code').val() + "</pre><p>" + result + "</p>");
+    });
+});
+</script>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+          <h1>JavaScript Werkstatt</h1>
+          Eine einfache JavaScript Experimentierumgebung.
+        </div>
+
+        <div id="editor" class="row">
+            <form>                
+                  <div class="form-group">
+                    <label for="code">Text Editor</label>
+                    <div id="play" class="glyphicon glyphicon-play">Ausf&uuml;hren</div>
+                    <textarea id="code" placeholder="Hier geh&ouml;rt der Code rein..." class="form-control"></textarea>
+                    <div id="experimentButton" class="glyphicon glyphicon-education">Experimentieren?</div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            Results
+            <div id="results"></div>
+        </div>        
+
+        <div id="examples" class="row">
+        Examples:
+
+        <pre>
+var x = {'x':42};
+x.toString();        
+        </pre>
+
+        <pre>
+$("#play").hover(function(){$(this).attr("style","cursor:pointer")});
+        </pre>
+
+        <pre>
+$('pre').click(function(){$("#code").val($(this).text())});
+$('pre').click(function(){$(this).hide()});
+        </pre>        
+
+        <pre>
+function reduce(combine, base, array) {
+  for (var i = 0; i < array.length; i++) {
+    base = combine(base, array[i]);
+  }
+  return base;
+}
+ 
+function sum(numbers) {
+  return reduce(new Function("a", "b", "return a + b"), 0, numbers);
+}
+
+var result = sum([1,2,3,4,5,6,7,8,9,10]);
+assert(result === 55, "sum of array elements is ok");
+        </pre>        
+
+        <pre>
+setTimeout(function(){alert('vorbei')}, 1000*45*60);
+window.onbeforeunload = function(){
+    return "soll der timer abgebrochen werden?";
+}
+        </pre>
+
+        <pre>
+var text = 'noch nicht vorbei!';
+setTimeout(function(){alert(text)}, 500);        
+        </pre>
+
+        <pre>
+setInterval(function(){var date = new Date(); console.log("es ist " + date.getHours() + ":" + date.getMinutes());}, 1000*60*5);        
+        </pre>
+
+        <pre>
+(function() { var i = 0; $("#experimentButton").click(function(){console.log('clicked ' + (++i) + ' times')})})();
+$("#experimentButton").attr("style","cursor:pointer");
+        </pre>
+
+        <pre>
+$("#experimentButton").off('click');
+$("#experimentButton").attr("style",""));
+        </pre>
+
+        <pre>
+var x = function(){alert('hallo: ' + this.toString())};
+var y = x.bind({toString:function(){return 'anomymous object'}});
+var z = {'toString':function(){return "yet another object";}};
+x();
+y();
+z.x = x;
+z.x();
+        </pre>
+
+        <pre>
+var x = function(){var args = Array.prototype.slice.call(arguments); return args;}
+var result = x(1,3);
+var expected = [1, 3];
+assert(result.length === expected.length, "return value length is ok");
+result.map(function(i,j){assert(i === expected[j], "element " + i + " ok");});
+        </pre>
+
+        <pre>
+var x = new Array();
+var newArray = new x.constructor(1,2,3,4,5);
+assert(newArray instanceof Array, "newArray is an array");
+assert(newArray.length === 5, "newArray contains 5 elements");
+        </pre>
+                
+        <pre>
+var p = $("#play");
+p.off('click');
+p.click(function(){
+    var result = eval($('#code').val());
+    $('#history').prepend("<pre>" + $('#code').val() + "</pre><p>" + result + "</p>");
+});
+        </pre>
+
+        <pre>
+var whatever = $('#history,#results').click(function(){$(this).children().remove();})
+assert(typeof whatever === 'object', "it's an object");
+assert(whatever instanceof jQuery, "it's a jQuery object");
+jQuery.prototype.init;        
+        </pre>
+
+        <pre>
+// Aufgabe:
+// wie bekommen wir History und die Results Liste wieder leer?
+        </pre>
+        </div>
+
+        <div class="row">
+            History
+            <div id="history"></div>
+        </div>
+
+        <div id="scratchpad" class="row" style="display:none">
+        <p>Scratchpad</p>
+            Function.bind, apply, call<br/>
+            Prototype chain: Function.prototype.constructor<br/>
+            Objects as maps<br/>
+            Objects have constructors<br/>
+            Arrays <br/>
+            example: <br/>
+            var nullObject = Object.create(null)<br/>
+            delete operator<br/>
+        </div>
+
+        <!-- 
+// clear history and results
+$('#history,#results').click(function(){$(this).children().remove();})
+        -->
+
+    </div>
+</body>
+</html>
